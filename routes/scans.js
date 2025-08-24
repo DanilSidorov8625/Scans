@@ -90,6 +90,7 @@ router.post('/export', isAuthenticated, (req, res) => {
     const { form_key, from_date, to_date } = req.body;
 
     let whereClause = 'WHERE account_id = ? AND deleted_at IS NULL';
+    let whereClause = 'WHERE account_id = ? AND deleted_at IS NULL AND export_id IS NULL';
     let params = [req.user.account_id];
 
     if (form_key) {
@@ -154,6 +155,15 @@ router.post('/export', isAuthenticated, (req, res) => {
     scanIds.forEach(scanId => {
       insertExportScan.run(exportResult.lastInsertRowid, scanId);
     });
+
+    // Update scans to mark them as exported
+    const updateScansExportId = db.prepare(`
+      UPDATE scans 
+      SET export_id = ? 
+      WHERE id IN (${scanIds.map(() => '?').join(',')})
+    `);
+
+    updateScansExportId.run(exportResult.lastInsertRowid, ...scanIds);
 
     req.flash('success', 'Export created successfully!');
     res.redirect(`/exports/${exportResult.lastInsertRowid}`);

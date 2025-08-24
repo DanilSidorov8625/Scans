@@ -1,6 +1,7 @@
 <div class="page-header">
     <div class="container">
-        <h1 class="page-title"><%= heading %></h1>
+        <h1 class="page-title">Contact Us</h1>
+        <p class="page-subtitle">Get in touch with our team</p>
     </div>
 </div>
 
@@ -9,27 +10,34 @@
         <div class="contact-grid">
             <div class="contact-info">
                 <h3>Get In Touch</h3>
-                <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                <p>Have questions about Scans? Need support? We'd love to hear from you.</p>
                 
                 <div class="contact-item">
                     <i class="fas fa-envelope"></i>
-                    <span>contact@example.com</span>
+                    <span>support@scansapp.com</span>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-phone"></i>
-                    <span>+1 (555) 123-4567</span>
+                    <span>Available via email</span>
                 </div>
                 <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>123 Main St, City, State 12345</span>
+                    <i class="fas fa-clock"></i>
+                    <span>Response within 24 hours</span>
                 </div>
             </div>
 
             <div class="contact-form-container">
-                <% if (message) { %>
+                <% if (messages.success && messages.success.length > 0) { %>
                     <div class="success-message">
                         <i class="fas fa-check-circle"></i>
-                        <%= message %>
+                        <%= messages.success[0] %>
+                    </div>
+                <% } %>
+
+                <% if (messages.error && messages.error.length > 0) { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <%= messages.error[0] %>
                     </div>
                 <% } %>
                 
@@ -46,7 +54,7 @@
                     
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
+                        <textarea id="message" name="message" rows="6" required placeholder="Tell us how we can help you..."></textarea>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">

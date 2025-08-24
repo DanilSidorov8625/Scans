@@ -1,18 +1,41 @@
 <div class="hero-section">
     <div class="container">
-        <h1 class="hero-title"><%= heading %></h1>
-        <p class="hero-subtitle"><%= message %></p>
+        <h1 class="hero-title">Welcome to Scans</h1>
+        <p class="hero-subtitle">Professional barcode scanning and data management platform</p>
         <div class="features-grid">
-            <% features.forEach(feature => { %>
-                <div class="feature-card">
-                    <i class="fas fa-check-circle"></i>
-                    <span><%= feature %></span>
-                </div>
-            <% }) %>
+            <div class="feature-card">
+                <i class="fas fa-qrcode"></i>
+                <span>Barcode Scanning</span>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-database"></i>
+                <span>Data Management</span>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-file-export"></i>
+                <span>CSV Exports</span>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-envelope"></i>
+                <span>Email Integration</span>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-users"></i>
+                <span>Multi-User Support</span>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Mobile Friendly</span>
+            </div>
         </div>
         <div class="cta-buttons">
-            <a href="/about" class="btn btn-primary">Learn More</a>
-            <a href="/contact" class="btn btn-secondary">Get Started</a>
+            <% if (isAuthenticated) { %>
+                <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+                <a href="/forms" class="btn btn-secondary">Start Scanning</a>
+            <% } else { %>
+                <a href="/auth/register" class="btn btn-primary">Get Started</a>
+                <a href="/auth/login" class="btn btn-secondary">Sign In</a>
+            <% } %>
         </div>
     </div>
 </div>
@@ -21,19 +44,19 @@
     <div class="container">
         <div class="info-grid">
             <div class="info-card">
-                <i class="fas fa-server"></i>
-                <h3>Express.js</h3>
-                <p>Fast, unopinionated, minimalist web framework for Node.js</p>
+                <i class="fas fa-qrcode"></i>
+                <h3>Smart Scanning</h3>
+                <p>Support for both keyboard input and physical barcode scanners with auto-detection</p>
             </div>
             <div class="info-card">
-                <i class="fas fa-code"></i>
-                <h3>EJS Templates</h3>
-                <p>Embedded JavaScript templates for dynamic content rendering</p>
+                <i class="fas fa-chart-line"></i>
+                <h3>Analytics & Reports</h3>
+                <p>Track scanning activity with detailed reports and export capabilities</p>
             </div>
             <div class="info-card">
-                <i class="fas fa-layer-group"></i>
-                <h3>Layouts</h3>
-                <p>Consistent page structure with reusable layout components</p>
+                <i class="fas fa-shield-alt"></i>
+                <h3>Secure & Reliable</h3>
+                <p>Role-based access control with secure data storage and backup</p>
             </div>
         </div>
     </div>

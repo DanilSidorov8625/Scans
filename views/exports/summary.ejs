@@ -1,7 +1,7 @@
 <div class="export-summary-container">
     <div class="page-header">
         <div class="container">
-            <h1 class="page-title">Export #<%= export.id %></h1>
+            <h1 class="page-title">Export #<%= exportRecord.id %></h1>
             <p class="page-subtitle">Export details and actions</p>
         </div>
     </div>
@@ -28,37 +28,37 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <label>Export ID:</label>
-                            <span>#<%= export.id %></span>
+                            <span>#<%= exportRecord.id %></span>
                         </div>
                         <div class="info-item">
                             <label>Created:</label>
-                            <span><%= new Date(export.created_at).toLocaleString() %></span>
+                            <span><%= new Date(exportRecord.created_at).toLocaleString() %></span>
                         </div>
                         <div class="info-item">
                             <label>Status:</label>
-                            <span class="status-badge status-<%= export.status %>">
-                                <%= export.status %>
+                            <span class="status-badge status-<%= exportRecord.status %>">
+                                <%= exportRecord.status %>
                             </span>
                         </div>
                         <div class="info-item">
                             <label>Scan Count:</label>
-                            <span><%= export.scan_count %></span>
+                            <span><%= exportRecord.scan_count %></span>
                         </div>
                         <div class="info-item">
                             <label>Created By:</label>
-                            <span><%= export.created_by_name || 'Unknown' %></span>
+                            <span><%= exportRecord.created_by_name || 'Unknown' %></span>
                         </div>
                         <div class="info-item">
                             <label>Format:</label>
-                            <span><%= export.format.toUpperCase() %></span>
+                            <span><%= exportRecord.format.toUpperCase() %></span>
                         </div>
                     </div>
 
-                    <% if (export.params_json) { %>
+                    <% if (exportRecord.params_json) { %>
                         <div class="export-params">
                             <h4>Export Parameters</h4>
                             <% 
-                                const params = JSON.parse(export.params_json);
+                                const params = JSON.parse(exportRecord.params_json);
                                 Object.entries(params).forEach(([key, value]) => {
                                     if (value) {
                             %>
@@ -77,8 +77,8 @@
                 <div class="export-actions-card">
                     <h3>Actions</h3>
                     <div class="actions-grid">
-                        <% if (export.status === 'ready') { %>
-                            <a href="/exports/<%= export.id %>/download" class="btn btn-primary btn-full">
+                        <% if (exportRecord.status === 'ready') { %>
+                            <a href="/exports/<%= exportRecord.id %>/download" class="btn btn-primary btn-full">
                                 <i class="fas fa-download"></i>
                                 Download CSV
                             </a>
@@ -87,17 +87,17 @@
                                 <i class="fas fa-envelope"></i>
                                 Send by Email
                             </button>
-                        <% } else if (export.status === 'building') { %>
+                        <% } else if (exportRecord.status === 'building') { %>
                             <div class="building-status">
                                 <i class="fas fa-spinner fa-spin"></i>
                                 Export is being generated...
                             </div>
-                        <% } else if (export.status === 'failed') { %>
+                        <% } else if (exportRecord.status === 'failed') { %>
                             <div class="error-status">
                                 <i class="fas fa-exclamation-triangle"></i>
                                 Export failed
-                                <% if (export.error) { %>
-                                    <p class="error-message"><%= export.error %></p>
+                                <% if (exportRecord.error) { %>
+                                    <p class="error-message"><%= exportRecord.error %></p>
                                 <% } %>
                             </div>
                         <% } %>
@@ -126,7 +126,7 @@
             <h3>Send Export by Email</h3>
             <button class="modal-close" onclick="hideEmailModal()">&times;</button>
         </div>
-        <form action="/exports/<%= export.id %>/email" method="POST" class="email-form">
+       <form action="/exports/<%= exportRecord.id %>/email" method="POST" class="email-form">
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" name="email" id="email" required value="<%= user.billing_email %>">

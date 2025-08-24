@@ -65,16 +65,16 @@ router.get('/:id', isAuthenticated, (req, res) => {
       ${whereClause}
     `);
 
-    const exportData = exportQuery.get(...params);
+    const exportRecord = exportQuery.get(...params);
 
-    if (!exportData) {
+    if (!exportRecord) {
       req.flash('error', 'Export not found');
       return res.redirect('/exports');
     }
 
     res.render('exports/summary', {
-      title: `Export #${exportData.id}`,
-      export: exportData,
+      title: `Export #${exportRecord.id}`,
+      exportRecord: exportRecord,
       user: req.user,
       messages: req.flash()
     });
@@ -103,9 +103,9 @@ router.get('/:id/download', isAuthenticated, async (req, res) => {
       SELECT e.* FROM exports e ${whereClause}
     `);
 
-    const exportData = exportQuery.get(...params);
+    const exportRecord = exportQuery.get(...params);
 
-    if (!exportData) {
+    if (!exportRecord) {
       req.flash('error', 'Export not found');
       return res.redirect('/exports');
     }
@@ -125,7 +125,7 @@ router.get('/:id/download', isAuthenticated, async (req, res) => {
     // Generate CSV
     const csvData = await generateCSV(scans);
     
-    const filename = exportData.filename || `export_${id}_${Date.now()}.csv`;
+    const filename = exportRecord.filename || `export_${id}_${Date.now()}.csv`;
     
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
@@ -170,9 +170,9 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
       SELECT e.* FROM exports e ${whereClause}
     `);
 
-    const exportData = exportQuery.get(...params);
+    const exportRecord = exportQuery.get(...params);
 
-    if (!exportData) {
+    if (!exportRecord) {
       req.flash('error', 'Export not found');
       return res.redirect('/exports');
     }
@@ -191,7 +191,7 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
 
     // Generate CSV
     const csvData = await generateCSV(scans);
-    const filename = exportData.filename || `export_${id}_${Date.now()}.csv`;
+    const filename = exportRecord.filename || `export_${id}_${Date.now()}.csv`;
 
     // Send email with Resend
     try {
@@ -205,8 +205,8 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
           <p><strong>Export Details:</strong></p>
           <ul>
             <li>Export ID: ${id}</li>
-            <li>Scan Count: ${exportData.scan_count}</li>
-            <li>Created: ${new Date(exportData.created_at).toLocaleString()}</li>
+            <li>Scan Count: ${exportRecord.scan_count}</li>
+            <li>Created: ${new Date(exportRecord.created_at).toLocaleString()}</li>
           </ul>
         `,
         attachments: [

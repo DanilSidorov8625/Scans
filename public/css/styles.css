@@ -260,6 +260,53 @@ body {
     gap: 2rem;
 }
 
+.features-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-detail-card {
+    text-align: center;
+    padding: 2rem;
+    background: #f8fafc;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.feature-detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-detail-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.feature-detail-card p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
 .team-card {
     text-align: center;
     padding: 2rem;
@@ -1671,19 +1718,32 @@ body {
     .nav-container {
         flex-direction: column;
         gap: 1rem;
+        padding: 1rem 20px;
     }
     
     .nav-menu {
-        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 1rem;
         text-align: center;
     }
     
     .hero-title {
         font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
     }
     
     .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .features-detail-grid {
         grid-template-columns: 1fr;
     }
     
@@ -1695,6 +1755,7 @@ body {
     .cta-buttons {
         flex-direction: column;
         align-items: center;
+        gap: 1rem;
     }
     
     .info-grid,
@@ -1710,6 +1771,7 @@ body {
     .admin-header {
       flex-direction: column;
       text-align: center;
+      gap: 1rem;
     }
     
     .admin-stats {
@@ -1718,6 +1780,7 @@ body {
     
     .auth-card {
       padding: 2rem;
+      margin: 0 10px;
     }
     
     .forms-grid,
@@ -1733,14 +1796,42 @@ body {
     .scans-controls {
       flex-direction: column;
       align-items: stretch;
+      gap: 1rem;
     }
     
     .scan-actions {
       flex-direction: column;
+      gap: 1rem;
     }
     
     .modal-content {
       width: 95%;
+      margin: 20px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+    }
+
+    .scanner-mode {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .users-table-container,
+    .scans-table-container,
+    .exports-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 1rem;
     }
 }
 
@@ -1751,6 +1842,10 @@ body {
     
     .hero-title {
         font-size: 1.8rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
     }
     
     .page-title {
@@ -1764,5 +1859,51 @@ body {
     
     .quick-actions {
       grid-template-columns: 1fr;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-link {
+        padding: 0.75rem 1rem;
+        display: block;
+        text-align: center;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        width: 98%;
+        margin: 10px;
+        max-height: 95vh;
+    }
+
+    .stats-grid {
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    .contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
