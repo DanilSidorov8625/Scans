@@ -116,11 +116,11 @@ router.get('/:id/download', isAuthenticated, async (req, res) => {
       FROM scans s
       LEFT JOIN users u ON s.user_id = u.id
       JOIN export_scans es ON s.id = es.scan_id
-      WHERE es.export_id = ? AND s.account_id = ?
+      WHERE es.export_id = ?
       ORDER BY s.scanned_at DESC
     `);
 
-    const scans = scansQuery.all(id, req.user.account_id);
+    const scans = scansQuery.all(id);
 
     // Generate CSV
     const csvData = await generateCSV(scans);
@@ -183,11 +183,11 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
       FROM scans s
       LEFT JOIN users u ON s.user_id = u.id
       JOIN export_scans es ON s.id = es.scan_id
-      WHERE es.export_id = ? AND s.account_id = ?
+      WHERE es.export_id = ?
       ORDER BY s.scanned_at DESC
     `);
 
-    const scans = scansQuery.all(id, req.user.account_id);
+    const scans = scansQuery.all(id);
 
     // Generate CSV
     const csvData = await generateCSV(scans);
@@ -432,9 +432,9 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
             last_email_sent_at = CURRENT_TIMESTAMP
         WHERE id IN (
           SELECT scan_id FROM export_scans WHERE export_id = ?
-        )
+        ) AND account_id = ?
       `);
-      updateScansEmailFailed.run(email, id);
+      updateScansEmailFailed.run(email, id, req.user.account_id);
 
       // Record failed email event
       const insertEmailEvent = db.prepare(`

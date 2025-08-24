@@ -65,10 +65,10 @@ router.post('/account-email', isAuthenticated, (req, res) => {
     const updateAccount = db.prepare(`
       UPDATE accounts 
       SET billing_email = ? 
-      WHERE id = ?
+      WHERE id = ? AND id = ?
     `);
 
-    updateAccount.run(billing_email, req.user.account_id);
+    updateAccount.run(billing_email, req.user.account_id, req.user.account_id);
 
     req.flash('success', 'Account email updated successfully');
     res.redirect('/settings');
