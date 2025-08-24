@@ -1,33 +1,40 @@
-# Use the official Node.js 18 LTS image
-FROM node:18-alpine
+# Use the official Node.js 18 slim image
+FROM node:18-slim
 
-# Set the working directory inside the container
+# Install build dependencies needed by better-sqlite3 (and other native modules)
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if available)
+# Copy dependency definitions
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (omit dev dependencies)
+RUN npm ci --omit=dev
 
-# Copy the rest of the application code
+# Copy the application source
 COPY . .
 
-# Create necessary directories
+# Create required directories
 RUN mkdir -p database public/uploads
 
-# Set proper permissions
+# Fix permissions
 RUN chown -R node:node /app
 
-# Switch to non-root user for security
+# Drop root privileges
 USER node
 
-# Expose the port the app runs on
+# Expose the app port
 EXPOSE 3000
 
-# Health check
+# Healthcheck for container orchestration
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
-# Start the application
+# Start the app
 CMD ["npm", "start"]
