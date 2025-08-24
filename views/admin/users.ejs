@@ -1,0 +1,162 @@
+<div class="admin-users-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">User Management</h1>
+            <p class="page-subtitle">Manage users in your account</p>
+        </div>
+    </div>
+
+    <section class="admin-users-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <!-- Add User Button -->
+            <div class="users-controls">
+                <button class="btn btn-primary" onclick="showAddUserModal()">
+                    <i class="fas fa-user-plus"></i>
+                    Add New User
+                </button>
+            </div>
+
+            <!-- Users Table -->
+            <div class="users-table-container">
+                <% if (users.length === 0) { %>
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>No users found</h3>
+                        <p>Add your first user to get started.</p>
+                    </div>
+                <% } else { %>
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(u => { %>
+                                <tr class="<%= u.is_active ? '' : 'user-inactive' %>">
+                                    <td><%= u.username %></td>
+                                    <td><%= u.email %></td>
+                                    <td>
+                                        <span class="role-badge role-<%= u.role %>">
+                                            <%= u.role %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-<%= u.is_active ? 'active' : 'inactive' %>">
+                                            <%= u.is_active ? 'Active' : 'Inactive' %>
+                                        </span>
+                                    </td>
+                                    <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+                                    <td class="actions">
+                                        <% if (u.id !== user.id) { %>
+                                            <!-- Role Change -->
+                                            <form action="/admin/users/<%= u.id %>/role" method="POST" style="display: inline;">
+                                                <select name="role" onchange="this.form.submit()" class="role-select-small">
+                                                    <option value="worker" <%= u.role === 'worker' ? 'selected' : '' %>>Worker</option>
+                                                    <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                                                </select>
+                                            </form>
+
+                                            <!-- Toggle Active -->
+                                            <form action="/admin/users/<%= u.id %>/toggle" method="POST" style="display: inline;">
+                                                <button type="submit" class="btn btn-sm <%= u.is_active ? 'btn-warning' : 'btn-success' %>" title="<%= u.is_active ? 'Deactivate' : 'Activate' %>">
+                                                    <i class="fas fa-<%= u.is_active ? 'pause' : 'play' %>"></i>
+                                                </button>
+                                            </form>
+
+                                            <!-- Delete -->
+                                            <form action="/admin/users/<%= u.id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        <% } else { %>
+                                            <span class="text-muted">Current User</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Add User Modal -->
+<div id="addUserModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New User</h3>
+            <button class="modal-close" onclick="hideAddUserModal()">&times;</button>
+        </div>
+        <form action="/admin/users" method="POST" class="add-user-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required minlength="6">
+                <small>Password must be at least 6 characters long</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select name="role" id="role" required>
+                    <option value="worker">Worker</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideAddUserModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add User</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showAddUserModal() {
+    document.getElementById('addUserModal').style.display = 'flex';
+}
+
+function hideAddUserModal() {
+    document.getElementById('addUserModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('addUserModal');
+    if (event.target === modal) {
+        hideAddUserModal();
+    }
+}
+</script>

@@ -1,0 +1,71 @@
+<div class="exports-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Exports</h1>
+            <p class="page-subtitle">Manage your data exports</p>
+        </div>
+    </div>
+
+    <section class="exports-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <div class="exports-table-container">
+                <% if (exports.length === 0) { %>
+                    <div class="empty-state">
+                        <i class="fas fa-file-export"></i>
+                        <h3>No exports found</h3>
+                        <p>Create your first export from the scans page.</p>
+                        <a href="/scans" class="btn btn-primary">View Scans</a>
+                    </div>
+                <% } else { %>
+                    <table class="exports-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Created</th>
+                                <th>Scans</th>
+                                <th>Status</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% exports.forEach(exp => { %>
+                                <tr>
+                                    <td>#<%= exp.id %></td>
+                                    <td><%= new Date(exp.created_at).toLocaleString() %></td>
+                                    <td><%= exp.scan_count %></td>
+                                    <td>
+                                        <span class="status-badge status-<%= exp.status %>">
+                                            <%= exp.status %>
+                                        </span>
+                                    </td>
+                                    <td><%= exp.created_by_name || 'Unknown' %></td>
+                                    <td>
+                                        <a href="/exports/<%= exp.id %>" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</div>

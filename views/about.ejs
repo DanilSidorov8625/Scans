@@ -1,0 +1,42 @@
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title"><%= heading %></h1>
+        <p class="page-subtitle"><%= description %></p>
+    </div>
+</div>
+
+<section class="team-section">
+    <div class="container">
+        <h2 class="section-title">Our Team</h2>
+        <div class="team-grid">
+            <% team.forEach(member => { %>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3><%= member.name %></h3>
+                    <p class="role"><%= member.role %></p>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">100+</span>
+                <span class="stat-label">Projects Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Happy Clients</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">3+</span>
+                <span class="stat-label">Years Experience</span>
+            </div>
+        </div>
+    </div>
+</section>

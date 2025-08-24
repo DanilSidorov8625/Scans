@@ -1,0 +1,40 @@
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title"><%= heading %></h1>
+        <p class="hero-subtitle"><%= message %></p>
+        <div class="features-grid">
+            <% features.forEach(feature => { %>
+                <div class="feature-card">
+                    <i class="fas fa-check-circle"></i>
+                    <span><%= feature %></span>
+                </div>
+            <% }) %>
+        </div>
+        <div class="cta-buttons">
+            <a href="/about" class="btn btn-primary">Learn More</a>
+            <a href="/contact" class="btn btn-secondary">Get Started</a>
+        </div>
+    </div>
+</div>
+
+<section class="info-section">
+    <div class="container">
+        <div class="info-grid">
+            <div class="info-card">
+                <i class="fas fa-server"></i>
+                <h3>Express.js</h3>
+                <p>Fast, unopinionated, minimalist web framework for Node.js</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-code"></i>
+                <h3>EJS Templates</h3>
+                <p>Embedded JavaScript templates for dynamic content rendering</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-layer-group"></i>
+                <h3>Layouts</h3>
+                <p>Consistent page structure with reusable layout components</p>
+            </div>
+        </div>
+    </div>
+</section>

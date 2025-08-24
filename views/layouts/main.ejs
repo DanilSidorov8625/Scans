@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> | Express EJS App</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>Express EJS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <% if (isAuthenticated) { %>
+                    <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                    <li><a href="/forms" class="nav-link">Forms</a></li>
+                    <li><a href="/scans" class="nav-link">Scans</a></li>
+                    <li><a href="/exports" class="nav-link">Exports</a></li>
+                    <% if (user && user.role === 'admin') { %>
+                        <li><a href="/admin" class="nav-link">Admin</a></li>
+                    <% } %>
+                    <li><a href="/settings" class="nav-link">Settings</a></li>
+                    <li>
+                        <form action="/auth/logout" method="POST" style="display: inline;">
+                            <button type="submit" class="nav-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                <% } else { %>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="/contact" class="nav-link">Contact</a></li>
+                    <li><a href="/auth/login" class="nav-link">Login</a></li>
+                    <li><a href="/auth/register" class="nav-link">Register</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <%- body %>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Express EJS App. Built with Node.js, Express, and EJS.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<div class="scan-container">
+    <div class="scan-header">
+        <div class="container">
+            <h1 class="scan-title"><%= form.name %></h1>
+            <p class="scan-subtitle"><%= form.description %></p>
+            <div class="scanner-mode">
+                Scanner Mode: <span class="mode-badge mode-<%= user.scanner_mode %>"><%= user.scanner_mode %></span>
+                <a href="/settings" class="btn btn-sm btn-secondary">Change</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="scan-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <div class="scan-form-container">
+                <form action="/forms/<%= formKey %>" method="POST" class="scan-form" id="scanForm">
+                    <div class="form-group">
+                        <label for="barcode">
+                            <i class="fas fa-barcode"></i>
+                            Barcode
+                        </label>
+                        <input 
+                            type="text" 
+                            id="barcode" 
+                            name="barcode" 
+                            required 
+                            autofocus
+                            class="scan-input"
+                            data-scanner-mode="<%= user.scanner_mode %>"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Location
+                        </label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            required
+                            class="scan-input"
+                            data-scanner-mode="<%= user.scanner_mode %>"
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-save"></i>
+                        Save Scan
+                    </button>
+                </form>
+
+                <div class="scan-actions">
+                    <a href="/forms" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Forms
+                    </a>
+                    <a href="/scans" class="btn btn-secondary">
+                        <i class="fas fa-list"></i>
+                        View Scans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

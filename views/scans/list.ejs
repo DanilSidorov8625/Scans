@@ -1,0 +1,173 @@
+<div class="scans-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Scans</h1>
+            <p class="page-subtitle">View and export your scan data</p>
+        </div>
+    </div>
+
+    <section class="scans-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <!-- Filters and Export -->
+            <div class="scans-controls">
+                <div class="filters">
+                    <form method="GET" class="filter-form">
+                        <select name="form_key" onchange="this.form.submit()">
+                            <option value="">All Forms</option>
+                            <% formKeys.forEach(fk => { %>
+                                <option value="<%= fk.form_key %>" <%= currentFormKey === fk.form_key ? 'selected' : '' %>>
+                                    <%= fk.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="export-controls">
+                    <button class="btn btn-primary" onclick="showExportModal()">
+                        <i class="fas fa-download"></i>
+                        Create Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scans Table -->
+            <div class="scans-table-container">
+                <% if (scans.length === 0) { %>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No scans found</h3>
+                        <p>Start scanning to see your data here.</p>
+                        <a href="/forms" class="btn btn-primary">Start Scanning</a>
+                    </div>
+                <% } else { %>
+                    <table class="scans-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Form</th>
+                                <th>Data</th>
+                                <th>User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% scans.forEach(scan => { %>
+                                <tr>
+                                    <td><%= new Date(scan.scanned_at).toLocaleString() %></td>
+                                    <td>
+                                        <span class="form-badge">
+                                            <%= scan.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="scan-data">
+                                            <% Object.entries(scan.parsedData).forEach(([key, value]) => { %>
+                                                <div class="data-item">
+                                                    <strong><%= key %>:</strong> <%= value %>
+                                                </div>
+                                            <% }) %>
+                                        </div>
+                                    </td>
+                                    <td><%= scan.username || 'Unknown' %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <% if (pagination.total > 1) { %>
+                        <div class="pagination">
+                            <% if (pagination.hasPrev) { %>
+                                <a href="?page=<%= pagination.current - 1 %><%= currentFormKey ? '&form_key=' + currentFormKey : '' %>" class="btn btn-secondary">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Previous
+                                </a>
+                            <% } %>
+                            
+                            <span class="pagination-info">
+                                Page <%= pagination.current %> of <%= pagination.total %>
+                            </span>
+                            
+                            <% if (pagination.hasNext) { %>
+                                <a href="?page=<%= pagination.current + 1 %><%= currentFormKey ? '&form_key=' + currentFormKey : '' %>" class="btn btn-secondary">
+                                    Next
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Export Modal -->
+<div id="exportModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Create Export</h3>
+            <button class="modal-close" onclick="hideExportModal()">&times;</button>
+        </div>
+        <form action="/scans/export" method="POST" class="export-form">
+            <div class="form-group">
+                <label for="export_form_key">Form Type</label>
+                <select name="form_key" id="export_form_key">
+                    <option value="">All Forms</option>
+                    <% formKeys.forEach(fk => { %>
+                        <option value="<%= fk.form_key %>">
+                            <%= fk.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="from_date">From Date</label>
+                <input type="date" name="from_date" id="from_date">
+            </div>
+            
+            <div class="form-group">
+                <label for="to_date">To Date</label>
+                <input type="date" name="to_date" id="to_date">
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideExportModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Export</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showExportModal() {
+    document.getElementById('exportModal').style.display = 'flex';
+}
+
+function hideExportModal() {
+    document.getElementById('exportModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('exportModal');
+    if (event.target === modal) {
+        hideExportModal();
+    }
+}
+</script>

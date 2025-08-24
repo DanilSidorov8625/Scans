@@ -1,0 +1,164 @@
+<div class="settings-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Manage your account preferences</p>
+        </div>
+    </div>
+
+    <section class="settings-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <div class="settings-grid">
+                <!-- Scanner Settings -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-qrcode"></i>
+                            Scanner Settings
+                        </h3>
+                        <p>Configure how the scanner behaves</p>
+                    </div>
+                    
+                    <form action="/settings/scanner-mode" method="POST" class="settings-form">
+                        <div class="form-group">
+                            <label>Scanner Mode</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="scanner_mode" value="keyboard" <%= user.scanner_mode === 'keyboard' ? 'checked' : '' %>>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <strong>Keyboard Mode</strong>
+                                        <p>Manual input with keyboard</p>
+                                    </div>
+                                </label>
+                                
+                                <label class="radio-option">
+                                    <input type="radio" name="scanner_mode" value="physical" <%= user.scanner_mode === 'physical' ? 'checked' : '' %>>
+                                    <span class="radio-custom"></span>
+                                    <div class="radio-content">
+                                        <strong>Physical Scanner</strong>
+                                        <p>Auto-submit when barcode is scanned</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Scanner Settings
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Account Settings (Admin Only) -->
+                <% if (user.role === 'admin') { %>
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-building"></i>
+                            Account Settings
+                        </h3>
+                        <p>Manage account-wide settings</p>
+                    </div>
+                    
+                    <form action="/settings/account-email" method="POST" class="settings-form">
+                        <div class="form-group">
+                            <label for="billing_email">Billing Email</label>
+                            <input 
+                                type="email" 
+                                id="billing_email" 
+                                name="billing_email" 
+                                value="<%= user.billing_email %>" 
+                                required
+                            >
+                            <small>This email will be used for billing and export notifications</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Update Account Email
+                        </button>
+                    </form>
+                </div>
+                <% } %>
+
+                <!-- Token Information -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-coins"></i>
+                            Token Balance
+                        </h3>
+                        <p>Your current token usage</p>
+                    </div>
+                    
+                    <div class="token-display">
+                        <div class="token-count">
+                            <span class="token-number"><%= user.tokens %></span>
+                            <span class="token-label">Tokens Remaining</span>
+                        </div>
+                        
+                        <div class="token-info">
+                            <p><i class="fas fa-info-circle"></i> Each email export costs 1 token</p>
+                            <p><i class="fas fa-download"></i> CSV downloads are free</p>
+                        </div>
+                        
+                        <!-- Future: Add token purchase button -->
+                        <button class="btn btn-secondary" disabled>
+                            <i class="fas fa-plus"></i>
+                            Add More Tokens (Coming Soon)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-user"></i>
+                            User Profile
+                        </h3>
+                        <p>Your account information</p>
+                    </div>
+                    
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <label>Username:</label>
+                            <span><%= user.username %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span><%= user.email %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Role:</label>
+                            <span class="role-badge role-<%= user.role %>"><%= user.role %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Account:</label>
+                            <span><%= user.account_name %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Member Since:</label>
+                            <span><%= new Date(user.created_at).toLocaleDateString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

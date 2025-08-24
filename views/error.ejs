@@ -1,0 +1,21 @@
+<div class="error-page">
+    <div class="container">
+        <div class="error-content">
+            <div class="error-icon">
+                <i class="fas fa-bug"></i>
+            </div>
+            <h1 class="error-title">500</h1>
+            <h2 class="error-subtitle">Server Error</h2>
+            <p class="error-message">Something went wrong on our end. Please try again later.</p>
+            <% if (error) { %>
+                <div class="error-details">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+            <% } %>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-home"></i>
+                Go Home
+            </a>
+        </div>
+    </div>
+</div>

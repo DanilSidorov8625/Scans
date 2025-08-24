@@ -1,0 +1,168 @@
+<div class="export-summary-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Export #<%= export.id %></h1>
+            <p class="page-subtitle">Export details and actions</p>
+        </div>
+    </div>
+
+    <section class="export-summary-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <div class="export-details-grid">
+                <div class="export-info-card">
+                    <h3>Export Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Export ID:</label>
+                            <span>#<%= export.id %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Created:</label>
+                            <span><%= new Date(export.created_at).toLocaleString() %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Status:</label>
+                            <span class="status-badge status-<%= export.status %>">
+                                <%= export.status %>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <label>Scan Count:</label>
+                            <span><%= export.scan_count %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Created By:</label>
+                            <span><%= export.created_by_name || 'Unknown' %></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Format:</label>
+                            <span><%= export.format.toUpperCase() %></span>
+                        </div>
+                    </div>
+
+                    <% if (export.params_json) { %>
+                        <div class="export-params">
+                            <h4>Export Parameters</h4>
+                            <% 
+                                const params = JSON.parse(export.params_json);
+                                Object.entries(params).forEach(([key, value]) => {
+                                    if (value) {
+                            %>
+                                <div class="param-item">
+                                    <strong><%= key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>:</strong>
+                                    <%= value %>
+                                </div>
+                            <% 
+                                    }
+                                });
+                            %>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div class="export-actions-card">
+                    <h3>Actions</h3>
+                    <div class="actions-grid">
+                        <% if (export.status === 'ready') { %>
+                            <a href="/exports/<%= export.id %>/download" class="btn btn-primary btn-full">
+                                <i class="fas fa-download"></i>
+                                Download CSV
+                            </a>
+
+                            <button class="btn btn-secondary btn-full" onclick="showEmailModal()">
+                                <i class="fas fa-envelope"></i>
+                                Send by Email
+                            </button>
+                        <% } else if (export.status === 'building') { %>
+                            <div class="building-status">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Export is being generated...
+                            </div>
+                        <% } else if (export.status === 'failed') { %>
+                            <div class="error-status">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Export failed
+                                <% if (export.error) { %>
+                                    <p class="error-message"><%= export.error %></p>
+                                <% } %>
+                            </div>
+                        <% } %>
+
+                        <a href="/exports" class="btn btn-outline btn-full">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Exports
+                        </a>
+                    </div>
+
+                    <div class="token-info">
+                        <h4>Account Tokens</h4>
+                        <p>Available: <strong><%= user.tokens %></strong></p>
+                        <small>Each email costs 1 token</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Email Modal -->
+<div id="emailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Send Export by Email</h3>
+            <button class="modal-close" onclick="hideEmailModal()">&times;</button>
+        </div>
+        <form action="/exports/<%= export.id %>/email" method="POST" class="email-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" required value="<%= user.billing_email %>">
+                <small>The CSV file will be sent as an attachment</small>
+            </div>
+            
+            <div class="cost-warning">
+                <i class="fas fa-info-circle"></i>
+                This will cost 1 token. You have <%= user.tokens %> tokens remaining.
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideEmailModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" <%= user.tokens < 1 ? 'disabled' : '' %>>
+                    <i class="fas fa-paper-plane"></i>
+                    Send Email
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showEmailModal() {
+    document.getElementById('emailModal').style.display = 'flex';
+}
+
+function hideEmailModal() {
+    document.getElementById('emailModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('emailModal');
+    if (event.target === modal) {
+        hideEmailModal();
+    }
+}
+</script>

@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, <%= user.username %>!</h1>
+        <p>Role: <span class="role-badge role-<%= user.role %>"><%= user.role %></span></p>
+    </div>
+
+    <% if (messages.success && messages.success.length > 0) { %>
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <%= messages.success[0] %>
+        </div>
+    <% } %>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="card-content">
+                <h3>Profile Information</h3>
+                <p><strong>Username:</strong> <%= user.username %></p>
+                <p><strong>Email:</strong> <%= user.email %></p>
+                <p><strong>Role:</strong> <%= user.role %></p>
+                <p><strong>Member since:</strong> <%= new Date(user.created_at).toLocaleDateString() %></p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="card-content">
+                <h3>Account Settings</h3>
+                <p>Manage your account preferences and security settings.</p>
+                <a href="#" class="btn btn-secondary">Update Profile</a>
+            </div>
+        </div>
+
+        <% if (user.role === 'admin') { %>
+        <div class="dashboard-card admin-card">
+            <div class="card-icon">
+                <i class="fas fa-users-cog"></i>
+            </div>
+            <div class="card-content">
+                <h3>Admin Panel</h3>
+                <p>Manage users, roles, and system settings.</p>
+                <a href="/dashboard/admin" class="btn btn-primary">Access Admin Panel</a>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="card-content">
+                <h3>Activity</h3>
+                <p>View your recent activity and usage statistics.</p>
+                <a href="#" class="btn btn-secondary">View Activity</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="logout-section">
+        <form action="/auth/logout" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </form>
+    </div>
+</div>

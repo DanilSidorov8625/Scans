@@ -1,0 +1,52 @@
+<div class="forms-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Available Forms</h1>
+            <p class="page-subtitle">Select a form to start scanning</p>
+        </div>
+    </div>
+
+    <section class="forms-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <div class="forms-grid">
+                <% Object.keys(forms).forEach(formKey => { %>
+                    <div class="form-card">
+                        <div class="form-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="form-content">
+                            <h3><%= forms[formKey].name %></h3>
+                            <p><%= forms[formKey].description %></p>
+                            <div class="form-fields">
+                                <strong>Fields:</strong>
+                                <% forms[formKey].fields.forEach(field => { %>
+                                    <span class="field-tag"><%= field %></span>
+                                <% }) %>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <a href="/forms/<%= formKey %>" class="btn btn-primary">
+                                <i class="fas fa-play"></i>
+                                Start Scanning
+                            </a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,187 @@
+<div class="admin-overview-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Admin Overview</h1>
+            <p class="page-subtitle">Account statistics and recent activity</p>
+        </div>
+    </div>
+
+    <section class="admin-overview-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.total_users %></h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.total_scans %></h3>
+                        <p>Total Scans</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.today_scans %></h3>
+                        <p>Today's Scans</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.total_exports %></h3>
+                        <p>Total Exports</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Tables Grid -->
+            <div class="admin-content-grid">
+                <!-- Recent Scans -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3>Recent Scans</h3>
+                        <a href="/scans" class="btn btn-sm btn-secondary">View All</a>
+                    </div>
+                    <div class="recent-scans-list">
+                        <% if (recentScans.length === 0) { %>
+                            <div class="empty-state-small">
+                                <p>No recent scans</p>
+                            </div>
+                        <% } else { %>
+                            <% recentScans.forEach(scan => { %>
+                                <div class="scan-item">
+                                    <div class="scan-info">
+                                        <div class="scan-form">
+                                            <span class="form-badge-small">
+                                                <%= scan.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                            </span>
+                                        </div>
+                                        <div class="scan-data-small">
+                                            <% Object.entries(scan.parsedData).forEach(([key, value]) => { %>
+                                                <span class="data-snippet"><%= key %>: <%= value %></span>
+                                            <% }) %>
+                                        </div>
+                                        <div class="scan-meta">
+                                            <span class="scan-user"><%= scan.username %></span>
+                                            <span class="scan-time"><%= new Date(scan.scanned_at).toLocaleString() %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- User Statistics -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3>Scans per User</h3>
+                        <a href="/admin/users" class="btn btn-sm btn-secondary">Manage Users</a>
+                    </div>
+                    <div class="user-stats-list">
+                        <% if (userStats.length === 0) { %>
+                            <div class="empty-state-small">
+                                <p>No user data</p>
+                            </div>
+                        <% } else { %>
+                            <% userStats.forEach(user => { %>
+                                <div class="user-stat-item">
+                                    <div class="user-info">
+                                        <span class="username"><%= user.username %></span>
+                                    </div>
+                                    <div class="scan-count">
+                                        <span class="count-badge"><%= user.scan_count %></span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Form Statistics -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3>Scans per Form</h3>
+                        <a href="/forms" class="btn btn-sm btn-secondary">View Forms</a>
+                    </div>
+                    <div class="form-stats-list">
+                        <% if (formStats.length === 0) { %>
+                            <div class="empty-state-small">
+                                <p>No form data</p>
+                            </div>
+                        <% } else { %>
+                            <% formStats.forEach(form => { %>
+                                <div class="form-stat-item">
+                                    <div class="form-info">
+                                        <span class="form-name">
+                                            <%= form.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                        </span>
+                                    </div>
+                                    <div class="scan-count">
+                                        <span class="count-badge"><%= form.scan_count %></span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="/admin/users" class="action-btn">
+                            <i class="fas fa-users"></i>
+                            <span>Manage Users</span>
+                        </a>
+                        <a href="/scans" class="action-btn">
+                            <i class="fas fa-list"></i>
+                            <span>View All Scans</span>
+                        </a>
+                        <a href="/exports" class="action-btn">
+                            <i class="fas fa-file-export"></i>
+                            <span>View Exports</span>
+                        </a>
+                        <a href="/settings" class="action-btn">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
