@@ -149,8 +149,9 @@ const createIndexes = () => {
 // Create default admin account and user
 const createDefaultAdmin = async () => {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
     const checkAccount = db.prepare('SELECT * FROM accounts WHERE billing_email = ? LIMIT 1');
-    const existingAccount = checkAccount.get('admin@example.com');
+    const existingAccount = checkAccount.get(adminEmail);
 
     if (!existingAccount) {
       // Create default account
@@ -161,7 +162,7 @@ const createDefaultAdmin = async () => {
 
       const accountResult = insertAccount.run(
         'Default Account',
-        'admin@example.com',
+        adminEmail,
         'default-account-token-' + Date.now(),
         100
       );
@@ -176,12 +177,12 @@ const createDefaultAdmin = async () => {
       insertUser.run(
         accountResult.lastInsertRowid,
         'admin',
-        'admin@example.com',
+        adminEmail,
         hashedPassword,
         'admin'
       );
 
-      console.log('Default admin account and user created: admin@example.com / admin123');
+      console.log(`Default admin account and user created: ${adminEmail} / admin123`);
     }
   } catch (error) {
     console.error('Error creating default admin:', error);

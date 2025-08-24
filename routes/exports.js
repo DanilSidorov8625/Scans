@@ -6,7 +6,7 @@ const { Resend } = require('resend');
 const router = express.Router();
 
 // Initialize Resend (you'll need to set RESEND_API_KEY environment variable)
-const resend = new Resend(process.env.RESEND_API_KEY || 'resend-api-key');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // GET exports list
 router.get('/', isAuthenticated, (req, res) => {
@@ -196,18 +196,186 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
     // Send email with Resend
     try {
       const emailResult = await resend.emails.send({
-        from: 'Scans <noreply@scans.omnaris.xyz>', // Replace with your verified domain
+        from: `${process.env.APP_NAME || 'Scans'} <${process.env.FROM_EMAIL}>`,
         to: email,
         subject: `Scan Export #${id}`,
         html: `
-          <h2>Your scan export is ready</h2>
-          <p>Please find your CSV export attached.</p>
-          <p><strong>Export Details:</strong></p>
-          <ul>
-            <li>Export ID: ${id}</li>
-            <li>Scan Count: ${exportRecord.scan_count}</li>
-            <li>Created: ${new Date(exportRecord.created_at).toLocaleString()}</li>
-          </ul>
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Your Scan Export is Ready</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #f8fafc;
+              }
+              .container {
+                background: white;
+                border-radius: 12px;
+                padding: 32px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 32px;
+                padding-bottom: 24px;
+                border-bottom: 2px solid #e2e8f0;
+              }
+              .logo {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+                font-size: 32px;
+              }
+              h1 {
+                color: #1e293b;
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+              }
+              .subtitle {
+                color: #64748b;
+                margin: 8px 0 0;
+                font-size: 16px;
+              }
+              .export-card {
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                border: 1px solid #0ea5e9;
+                border-radius: 12px;
+                padding: 24px;
+                margin: 24px 0;
+              }
+              .export-id {
+                font-size: 24px;
+                font-weight: 700;
+                color: #0369a1;
+                margin-bottom: 16px;
+              }
+              .details-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 20px;
+              }
+              .detail-item {
+                text-align: center;
+                padding: 16px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+              }
+              .detail-label {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #64748b;
+                margin-bottom: 4px;
+              }
+              .detail-value {
+                font-size: 18px;
+                font-weight: 600;
+                color: #1e293b;
+              }
+              .attachment-notice {
+                background: #fef3c7;
+                border: 1px solid #f59e0b;
+                border-radius: 8px;
+                padding: 16px;
+                margin: 24px 0;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              }
+              .attachment-icon {
+                background: #f59e0b;
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+              }
+              .footer {
+                text-align: center;
+                margin-top: 32px;
+                padding-top: 24px;
+                border-top: 1px solid #e2e8f0;
+                color: #64748b;
+                font-size: 14px;
+              }
+              .login-button {
+                display: inline-block;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                margin-top: 16px;
+              }
+              @media (max-width: 480px) {
+                .details-grid {
+                  grid-template-columns: 1fr;
+                }
+                .container {
+                  padding: 20px;
+                }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="logo">📊</div>
+                <h1>Export Complete!</h1>
+                <p class="subtitle">Your scan data export is ready for download</p>
+              </div>
+              
+              <div class="export-card">
+                <div class="export-id">Export #${id}</div>
+                <div class="details-grid">
+                  <div class="detail-item">
+                    <div class="detail-label">Scan Count</div>
+                    <div class="detail-value">${exportRecord.scan_count}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Created</div>
+                    <div class="detail-value">${new Date(exportRecord.created_at).toLocaleDateString()}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="attachment-notice">
+                <div class="attachment-icon">📎</div>
+                <div>
+                  <strong>CSV File Attached</strong><br>
+                  Your scan data has been exported to a CSV file and attached to this email.
+                </div>
+              </div>
+              
+              <div class="footer">
+                <a href="${process.env.APP_URL || 'http://localhost:3000'}/exports/${id}" class="login-button">View Export Details</a>
+                <p>This export was generated from ${process.env.APP_NAME || 'Scans'} on ${new Date().toLocaleDateString()}.</p>
+                <p>Need help? Contact our support team.</p>
+              </div>
+            </div>
+          </body>
+          </html>
         `,
         attachments: [
           {
