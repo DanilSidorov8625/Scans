@@ -147,55 +147,55 @@ const createIndexes = () => {
 };
 
 // Create default admin account and user
-const createDefaultAdmin = async () => {
-  try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-    const checkAccount = db.prepare('SELECT * FROM accounts WHERE billing_email = ? LIMIT 1');
-    const existingAccount = checkAccount.get(adminEmail);
+// const createDefaultAdmin = async () => {
+//   try {
+//     const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+//     const checkAccount = db.prepare('SELECT * FROM accounts WHERE billing_email = ? LIMIT 1');
+//     const existingAccount = checkAccount.get(adminEmail);
 
-    if (!existingAccount) {
-      // Create default account
-      const insertAccount = db.prepare(`
-        INSERT INTO accounts (name, billing_email, token, tokens)
-        VALUES (?, ?, ?, ?)
-      `);
+//     if (!existingAccount) {
+//       // Create default account
+//       const insertAccount = db.prepare(`
+//         INSERT INTO accounts (name, billing_email, token, tokens)
+//         VALUES (?, ?, ?, ?)
+//       `);
 
-      const accountResult = insertAccount.run(
-        'Default Account',
-        adminEmail,
-        'default-account-token-' + Date.now(),
-        100
-      );
+//       const accountResult = insertAccount.run(
+//         'Default Account',
+//         adminEmail,
+//         'default-account-token-' + Date.now(),
+//         100
+//       );
 
-      // Create default admin user
-      const hashedPassword = await bcrypt.hash('admin123', 12);
-      const insertUser = db.prepare(`
-        INSERT INTO users (account_id, username, email, password, role)
-        VALUES (?, ?, ?, ?, ?)
-      `);
+//       // Create default admin user
+//       const hashedPassword = await bcrypt.hash('admin123', 12);
+//       const insertUser = db.prepare(`
+//         INSERT INTO users (account_id, username, email, password, role)
+//         VALUES (?, ?, ?, ?, ?)
+//       `);
 
-      insertUser.run(
-        accountResult.lastInsertRowid,
-        'admin',
-        adminEmail,
-        hashedPassword,
-        'admin'
-      );
+//       insertUser.run(
+//         accountResult.lastInsertRowid,
+//         'admin',
+//         adminEmail,
+//         hashedPassword,
+//         'admin'
+//       );
 
-      console.log(`Default admin account and user created: ${adminEmail} / admin123`);
-    }
-  } catch (error) {
-    console.error('Error creating default admin:', error);
-    throw error;
-  }
-};
+//       console.log(`Default admin account and user created: ${adminEmail} / admin123`);
+//     }
+//   } catch (error) {
+//     console.error('Error creating default admin:', error);
+//     throw error;
+//   }
+// };
 
 // Initialize database
 const initDatabase = async () => {
   try {
     createTables();
     createIndexes();
-    await createDefaultAdmin();
+    // await createDefaultAdmin();
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Database initialization error:', error);

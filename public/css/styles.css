@@ -166,9 +166,14 @@ body {
 }
 
 .btn-secondary {
-    background: #cdced1;
-    color: rgb(77, 72, 72);
-    border: 2px solid white;
+  background-color: #e2e4e9;
+  color: #333;
+  border: 2px solid #d1d5db;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 
 .btn-secondary:hover {

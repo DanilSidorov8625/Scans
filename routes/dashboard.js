@@ -16,8 +16,9 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/admin', isAdmin, (req, res) => {
   try {
     // Get all users for admin panel
-    const stmt = db.prepare('SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC');
-    const users = stmt.all();
+    // const account_id
+    const stmt = db.prepare('SELECT id, username, email, role, created_at FROM users WHERE account_id = ? ORDER BY created_at DESC');
+    const users = stmt.all(req.user.account_id);
 
     res.render('dashboard/admin', {
       title: 'Admin Panel',

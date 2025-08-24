@@ -387,6 +387,8 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
         ]
       });
 
+      console.log('✅ Resend email result:', emailResult);
+
       // Update scans table with email tracking info
       const updateScansEmail = db.prepare(`
         UPDATE scans 
