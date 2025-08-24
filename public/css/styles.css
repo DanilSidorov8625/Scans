@@ -16,6 +16,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    padding-top: 20px;
 }
 
 /* Header Styles */
@@ -165,8 +166,8 @@ body {
 }
 
 .btn-secondary {
-    background: transparent;
-    color: white;
+    background: #cdced1;
+    color: rgb(77, 72, 72);
     border: 2px solid white;
 }
 
@@ -379,6 +380,7 @@ body {
 .stat-label {
     font-size: 1.1rem;
     opacity: 0.8;
+    color:#1e293b;
 }
 
 /* Contact Section */
@@ -1070,6 +1072,7 @@ body {
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
+  padding-top: 20px;
 }
 
 .filter-form select {
@@ -1084,6 +1087,7 @@ body {
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 30px;
 }
 
 .scans-table {

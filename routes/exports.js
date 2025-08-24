@@ -6,7 +6,7 @@ const { Resend } = require('resend');
 const router = express.Router();
 
 // Initialize Resend (you'll need to set RESEND_API_KEY environment variable)
-const resend = new Resend(process.env.RESEND_API_KEY || 'your-resend-api-key');
+const resend = new Resend(process.env.RESEND_API_KEY || 'resend-api-key');
 
 // GET exports list
 router.get('/', isAuthenticated, (req, res) => {
@@ -124,9 +124,9 @@ router.get('/:id/download', isAuthenticated, async (req, res) => {
 
     // Generate CSV
     const csvData = await generateCSV(scans);
-    
+
     const filename = exportRecord.filename || `export_${id}_${Date.now()}.csv`;
-    
+
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(csvData);
@@ -196,7 +196,7 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
     // Send email with Resend
     try {
       const emailResult = await resend.emails.send({
-        from: 'noreply@yourdomain.com', // Replace with your verified domain
+        from: 'Scans <noreply@scans.omnaris.xyz>', // Replace with your verified domain
         to: email,
         subject: `Scan Export #${id}`,
         html: `
@@ -212,7 +212,9 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
         attachments: [
           {
             filename: filename,
-            content: Buffer.from(csvData).toString('base64')
+            content: Buffer.from(csvData).toString('base64'),
+            type: 'text/csv',
+            disposition: 'attachment'
           }
         ]
       });
@@ -239,7 +241,7 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
 
     } catch (emailError) {
       console.error('Email sending error:', emailError);
-      
+
       // Record failed email event
       const insertEmailEvent = db.prepare(`
         INSERT INTO email_events (account_id, to_email, status, provider, error)
@@ -270,17 +272,17 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
 async function generateCSV(scans) {
   return new Promise((resolve, reject) => {
     const records = [];
-    
+
     // Add header
     records.push(['ID', 'Date', 'Form', 'User', 'Data']);
-    
+
     // Add scan data
     scans.forEach(scan => {
       const parsedData = JSON.parse(scan.data);
       const dataString = Object.entries(parsedData)
         .map(([key, value]) => `${key}: ${value}`)
         .join('; ');
-      
+
       records.push([
         scan.id,
         new Date(scan.scanned_at).toISOString(),

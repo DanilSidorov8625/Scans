@@ -29,8 +29,8 @@ router.post('/', async (req, res) => {
   try {
     // Send email using Resend
     await resend.emails.send({
-      from: 'noreply@yourdomain.com', // Replace with your verified domain
-      to: 'admin@yourdomain.com', // Replace with your admin email
+      from: 'Contact <noreply@scans.omnaris.xyz>', // Replace with your verified domain
+      to: 'danilsidorov8625@gmail.com', // Replace with your admin email
       subject: `Contact Form: ${name}`,
       html: `
         <h2>New Contact Form Submission</h2>

@@ -10,7 +10,7 @@ router.get('/', isAuthenticated, (req, res) => {
     const limit = 20;
     const offset = (page - 1) * limit;
 
-    let whereClause = 'WHERE s.account_id = ? AND s.deleted_at IS NULL';
+    let whereClause = 'WHERE s.account_id = ? AND s.deleted_at IS NULL AND export_id IS NULL';
     let params = [req.user.account_id];
 
     // Filter by form key if provided
@@ -89,7 +89,6 @@ router.post('/export', isAuthenticated, (req, res) => {
   try {
     const { form_key, from_date, to_date } = req.body;
 
-    let whereClause = 'WHERE account_id = ? AND deleted_at IS NULL';
     let whereClause = 'WHERE account_id = ? AND deleted_at IS NULL AND export_id IS NULL';
     let params = [req.user.account_id];
 

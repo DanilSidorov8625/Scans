@@ -106,15 +106,6 @@ const createTables = () => {
       )
     `);
 
-    // Sessions table for express-session
-    const createSessionsTable = db.prepare(`
-      CREATE TABLE IF NOT EXISTS sessions (
-        sid TEXT PRIMARY KEY,
-        sess TEXT NOT NULL,
-        expired DATETIME NOT NULL
-      )
-    `);
-
     // Execute table creation
     createAccountsTable.run();
     createUsersTable.run();
@@ -122,7 +113,6 @@ const createTables = () => {
     createEmailEventsTable.run();
     createExportsTable.run();
     createExportScansTable.run();
-    createSessionsTable.run();
 
     console.log('Database tables created successfully');
   } catch (error) {
