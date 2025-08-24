@@ -158,11 +158,11 @@ router.post('/export', isAuthenticated, (req, res) => {
     // Update scans to mark them as exported
     const updateScansExportId = db.prepare(`
       UPDATE scans 
-      SET export_id = ? 
-      WHERE id IN (${scanIds.map(() => '?').join(',')})
+      SET export_id = ?
+      WHERE id IN (${scanIds.map(() => '?').join(',')}) AND account_id = ?
     `);
 
-    updateScansExportId.run(exportResult.lastInsertRowid, ...scanIds);
+    updateScansExportId.run(exportResult.lastInsertRowid, ...scanIds, req.user.account_id);
 
     req.flash('success', 'Export created successfully!');
     res.redirect(`/exports/${exportResult.lastInsertRowid}`);
