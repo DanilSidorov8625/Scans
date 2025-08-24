@@ -1717,6 +1717,101 @@ body {
   color: white;
 }
 
+/* Activity Page Styles */
+.activity-container {
+  min-height: 80vh;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.chart-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.chart-header h3 {
+  color: #1e293b;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+.activity-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.activity-user {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.activity-data {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-container {
@@ -1797,6 +1892,14 @@ body {
       grid-template-columns: 1fr;
     }
     
+    .charts-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .chart-container {
+      height: 250px;
+    }
+    
     .scans-controls {
       flex-direction: column;
       align-items: stretch;
@@ -1863,6 +1966,18 @@ body {
     
     .quick-actions {
       grid-template-columns: 1fr;
+    }
+    
+    .activity-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    
+    .activity-title {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
     }
 
     .nav-menu {

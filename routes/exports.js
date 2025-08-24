@@ -219,6 +219,18 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
         ]
       });
 
+      // Update scans table with email tracking info
+      const updateScansEmail = db.prepare(`
+        UPDATE scans 
+        SET last_sent_to_email = ?, 
+            last_email_status = 'sent', 
+            last_email_sent_at = CURRENT_TIMESTAMP
+        WHERE id IN (
+          SELECT scan_id FROM export_scans WHERE export_id = ?
+        )
+      `);
+      updateScansEmail.run(email, id);
+
       // Record email event
       const insertEmailEvent = db.prepare(`
         INSERT INTO email_events (account_id, to_email, status, provider, message_id)
@@ -241,6 +253,18 @@ router.post('/:id/email', isAuthenticated, async (req, res) => {
 
     } catch (emailError) {
       console.error('Email sending error:', emailError);
+
+      // Update scans table with failed email status
+      const updateScansEmailFailed = db.prepare(`
+        UPDATE scans 
+        SET last_sent_to_email = ?, 
+            last_email_status = 'failed', 
+            last_email_sent_at = CURRENT_TIMESTAMP
+        WHERE id IN (
+          SELECT scan_id FROM export_scans WHERE export_id = ?
+        )
+      `);
+      updateScansEmailFailed.run(email, id);
 
       // Record failed email event
       const insertEmailEvent = db.prepare(`

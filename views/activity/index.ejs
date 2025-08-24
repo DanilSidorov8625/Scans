@@ -1,0 +1,254 @@
+<div class="activity-container">
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Activity Dashboard</h1>
+            <p class="page-subtitle">
+                <% if (isWorker) { %>
+                    Your scanning activity and statistics
+                <% } else { %>
+                    Account-wide scanning activity and statistics
+                <% } %>
+            </p>
+        </div>
+    </div>
+
+    <section class="activity-section">
+        <div class="container">
+            <% if (messages.success && messages.success.length > 0) { %>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <%= messages.success[0] %>
+                </div>
+            <% } %>
+
+            <% if (messages.error && messages.error.length > 0) { %>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.total_scans %></h3>
+                        <p>Total Scans</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.today_scans %></h3>
+                        <p>Today's Scans</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.week_scans %></h3>
+                        <p>This Week</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><%= stats.exported_scans %></h3>
+                        <p>Exported Scans</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Scans Per Day Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Scans Over Time (Last 30 Days)</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scansPerDayChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Scans Per Form Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Scans by Form Type</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scansPerFormChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Scans Per User Chart (Admin Only) -->
+                <% if (!isWorker && scansPerUser.length > 0) { %>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Scans by User</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scansPerUserChart"></canvas>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- Recent Activity -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    <div class="activity-list">
+                        <% if (recentActivity.length === 0) { %>
+                            <div class="empty-state-small">
+                                <p>No recent activity</p>
+                            </div>
+                        <% } else { %>
+                            <% recentActivity.forEach(scan => { %>
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">
+                                            <span class="form-badge-small">
+                                                <%= scan.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+                                            </span>
+                                            <% if (!isWorker) { %>
+                                                <span class="activity-user">by <%= scan.username %></span>
+                                            <% } %>
+                                        </div>
+                                        <div class="activity-data">
+                                            <% Object.entries(scan.parsedData).forEach(([key, value]) => { %>
+                                                <span class="data-snippet"><%= key %>: <%= value %></span>
+                                            <% }) %>
+                                        </div>
+                                        <div class="activity-time">
+                                            <%= new Date(scan.scanned_at).toLocaleString() %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Scans Per Day Chart
+const scansPerDayData = <%- JSON.stringify(scansPerDay) %>;
+const scansPerDayCtx = document.getElementById('scansPerDayChart').getContext('2d');
+new Chart(scansPerDayCtx, {
+    type: 'line',
+    data: {
+        labels: scansPerDayData.map(item => new Date(item.scan_date).toLocaleDateString()),
+        datasets: [{
+            label: 'Scans',
+            data: scansPerDayData.map(item => item.scan_count),
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Scans Per Form Chart
+const scansPerFormData = <%- JSON.stringify(scansPerForm) %>;
+const scansPerFormCtx = document.getElementById('scansPerFormChart').getContext('2d');
+new Chart(scansPerFormCtx, {
+    type: 'doughnut',
+    data: {
+        labels: scansPerFormData.map(item => item.form_key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())),
+        datasets: [{
+            data: scansPerFormData.map(item => item.scan_count),
+            backgroundColor: [
+                '#667eea',
+                '#764ba2',
+                '#f093fb',
+                '#f5576c',
+                '#4facfe',
+                '#00f2fe'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+<% if (!isWorker && scansPerUser.length > 0) { %>
+// Scans Per User Chart
+const scansPerUserData = <%- JSON.stringify(scansPerUser) %>;
+const scansPerUserCtx = document.getElementById('scansPerUserChart').getContext('2d');
+new Chart(scansPerUserCtx, {
+    type: 'bar',
+    data: {
+        labels: scansPerUserData.map(item => item.username),
+        datasets: [{
+            label: 'Scans',
+            data: scansPerUserData.map(item => item.scan_count),
+            backgroundColor: '#667eea',
+            borderColor: '#667eea',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+<% } %>
+</script>

@@ -19,6 +19,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const formsRoutes = require('./routes/forms');
 const scansRoutes = require('./routes/scans');
 const exportsRoutes = require('./routes/exports');
+const activityRoutes = require('./routes/activity');
 const settingsRoutes = require('./routes/settings');
 const adminRoutes = require('./routes/admin');
 
@@ -69,6 +70,7 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/forms', formsRoutes);
 app.use('/scans', scansRoutes);
 app.use('/exports', exportsRoutes);
+app.use('/activity', activityRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/admin', adminRoutes);
 
