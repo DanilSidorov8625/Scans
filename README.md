@@ -1,132 +1,148 @@
 # Scans App
 
-A professional barcode scanning and data management platform built with Node.js, Express, and EJS.
+A **contract-built warehouse barcode scanning and data management platform** designed for speed, reliability, and simplicity on real warehouse floors.
 
-## Features
+---
 
-- 🔍 **Barcode Scanning**: Support for keyboard input and physical barcode scanners
-- 📊 **Data Management**: Organize and track scan data with multiple form types
-- 📈 **Analytics**: Comprehensive activity dashboard with charts and statistics
-- 📧 **Email Integration**: Export data via email using Resend API
-- 👥 **Multi-Tenant**: Secure account isolation with role-based access control
-- 📱 **Mobile Responsive**: Optimized for all devices
-- 🔐 **Secure**: Enterprise-grade authentication and data protection
+## 📖 Story of the Build
 
-## Quick Start
+A friend introduced me to a warehouse manager who needed a lightweight tool to **scan barcodes, capture structured data, and export it to CSV/email**—with **user tracking** and **basic analytics**. Their current system couldn’t support that workflow without heavy integration and delays.
 
-### Using Docker (Recommended)
+Because **Wi-Fi is spotty** in many warehouse zones and workers scan **hundreds of items per shift**, every second matters. A heavy frontend framework or multiple round-trips per scan would slow them down. I built a **fast EJS/HTML-based web app** that renders server-side and ships minimal JS so pages load instantly and scans post **sub-second** in typical conditions. Hosting is deliberately humble—**a $5 Linode**—to keep ops simple and costs low.
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd scans-app
-   ```
+---
 
-2. **Set up environment variables**
-   ```bash
-   cp .env.docker .env
-   # Edit .env with your actual values
-   ```
+## 🔑 What It Does (Core Capabilities)
 
-3. **Run with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
+- 🔍 **Lightning-fast barcode scanning**
+  - Works with **keyboard wedge** and **dedicated physical scanners**
+  - Minimal payloads + server-rendered pages for rapid interactions
 
-4. **Access the application**
-   - Open http://localhost:3000
-   - Register a new account to get started
+- 🧱 **Multi-form data capture**
+  - Configurable **form types** (e.g., INBOUND / OUTBOUND / RETURNS / AUDIT / PICKLIST)
+  - Stores full scan payloads for traceability
 
-### Manual Installation
+- 📤 **Exports & Email**
+  - **CSV exports** on demand or by time window
+  - **Email exports** via **Resend** with status tracking on each run
 
-1. **Prerequisites**
-   - Node.js 18+ 
-   - npm or yarn
+- 📈 **Analytics**
+  - Daily/weekly scan counts
+  - Scans by form type / user
+  - Export history and basic performance trends
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+- 👥 **User & Account Management (RBAC)**
+  - **Admin**: manage users, exports, analytics
+  - **Worker**: focused scan UI with minimal distractions
+  - Multi-tenant isolation by **account**
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+---
 
-4. **Start the application**
-   ```bash
-   npm start
-   ```
+## 🧪 Real-World Usage (Contract Context)
 
-## Environment Variables
+- **12 daily users**
+- **Hundreds of scans/day**
+- **Thousands of emails sent** (exports & operational notifications)
+- Hosted on a **$5/month Linode**
+- **$15/month MRR after expenses** (support + hosting margin)
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `RESEND_API_KEY` | Your Resend API key for email functionality | Yes |
-| `FROM_EMAIL` | Verified sender email address | Yes |
-| `ADMIN_EMAIL` | Admin email for contact form submissions | Yes |
-| `SESSION_SECRET` | Secret key for session encryption | Yes |
-| `APP_NAME` | Application name for branding | No |
-| `APP_URL` | Base URL for email links | No |
+> The goal wasn’t a “big system,” it was a **fast, dependable tool** the team could actually use under real constraints (limited bandwidth, rugged devices, and time pressure).
 
-## Docker Commands
+---
 
-```bash
-# Build and start
-docker-compose up -d
+## 🧠 Why It’s Fast
 
-# View logs
-docker-compose logs -f
+- **Server-rendered EJS** (no heavy SPA shell)
+- **Tiny JS footprint** for the scan form
+- **Optimized routes**: one POST per scan, lean validation, and immediate persistence
+- **Aggressive caching** for static assets; **WAL mode** for SQLite for concurrent reads/writes
+- **Form-specific shortcuts** to reduce keystrokes when scanning hundreds in sequence
 
-# Stop services
-docker-compose down
+---
 
-# Rebuild after changes
-docker-compose up -d --build
+## 🧰 Tech Stack
 
-# Access container shell
-docker-compose exec scans-app sh
-```
+- **Backend**: Node.js, Express
+- **Views**: EJS + **EJS Layouts**
+- **Frontend**: HTML, CSS, vanilla JS
+- **Email**: Resend
+- **Charts**: Chart.js
+- **Database**: SQLite (WAL), better-sqlite3
+- **Auth**: Session-based with bcrypt hashing
+- **Hosting**: Linode (1 vCPU/$5 plan)
 
-## Database
+---
 
-The application uses SQLite with automatic initialization. Database files are stored in the `./database` directory and are persisted via Docker volumes.
+## 👮 Roles & Permissions (RBAC)
 
-## Security Features
+- **Admin**
+  - Create/manage users (admin/worker)
+  - Trigger **CSV/email exports**
+  - View **analytics dashboard**
+- **Worker**
+  - **Scan UI** only—fast entry, minimal clicks
+  - Limited visibility to reduce clutter and errors
 
-- ✅ Multi-tenant data isolation
-- ✅ Secure password hashing (bcrypt)
-- ✅ Session-based authentication
-- ✅ Role-based access control
-- ✅ CSRF protection via flash messages
-- ✅ Input validation and sanitization
+---
 
-## API Endpoints
+## 📊 Analytics & Reporting
 
-- `GET /` - Landing page
-- `GET /auth/login` - Login page
-- `GET /auth/register` - Registration page
-- `GET /dashboard` - User dashboard
-- `GET /forms` - Available scan forms
-- `GET /scans` - Scan data management
-- `GET /exports` - Export management
-- `GET /activity` - Analytics dashboard
-- `GET /settings` - User settings
-- `GET /admin` - Admin panel (admin only)
+- **Volume metrics**: total scans, scans/day, scans per user
+- **Form distribution**: inbound vs outbound vs returns, etc.
+- **Export history**: count, status, size, recipients
+- **Operational health**: basic trend lines to spot spikes and slowdowns
 
-## Contributing
+---
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 🧩 Challenges & How They Were Solved
 
-## License
+- **Spotty Wi-Fi in the warehouse**
+  - Chose **server-rendered EJS** and minimal JS for ultra-fast loads
+  - Kept requests small; single POST per scan with immediate feedback
 
-This project is proprietary software owned by Omnaris LLC.
+- **High scan throughput**
+  - Sub-second scan processing path
+  - Avoided blocking operations; tuned SQLite with **WAL** and proper indices
 
-## Support
+- **Simple but safe auth**
+  - Session-based auth with **bcrypt** hashing
+  - **Role-based access** to keep workers focused and reduce mis-clicks
 
-For support, email your admin or create an issue in the repository.
+- **Low operational budget**
+  - Single **$5 Linode** node
+  - SQLite with WAL (no external DB to manage)
+  - Emails via **Resend** for reliability and easy observability
+
+---
+
+## 🧮 What It Can Handle
+
+- **Hundreds of scans per day** (sustained)
+- **Thousands of emails sent** (exports/notifications over time)
+- **12 daily users** across **admin/worker** roles
+- Continuous CSV exports without blocking scanning
+
+---
+
+## 🔒 Security Notes
+
+- Passwords hashed with **bcrypt**
+- Session-based authentication, secure cookies
+- Multi-tenant account isolation
+- Input validation/sanitization on all scan/Export routes
+
+---
+
+## 🧾 Business Snapshot
+
+- **Hosting**: $5/month Linode
+- **MRR**: ~$15/month **after expenses**
+- Ongoing support/maintenance under a **contract arrangement**
+
+---
+
+## 🗺️ TL;DR
+
+The **Scans App** is a **contract-built tool** for warehouse teams who need speed and reliability over bells and whistles. It **handles real volume**, stays fast in **low-bandwidth** environments, and gives admins the **exports and analytics** they need—without a heavyweight stack.
+
+---
