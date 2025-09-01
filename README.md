@@ -38,6 +38,12 @@ Because **Wi-Fi is spotty** in many warehouse zones and workers scan **hundreds 
 
 ---
 
+## 📸 Preview
+
+![Preview](./Preview-Scans.png)
+
+---
+
 ## 🧪 Real-World Usage (Contract Context)
 
 - **12 daily users**
