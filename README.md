@@ -40,7 +40,7 @@ Because **Wi-Fi is spotty** in many warehouse zones and workers scan **hundreds 
 
 ## 📸 Preview
 
-![Preview](./Preview-Scans.png)
+![Preview](./Preview-Scans.avif)
 
 ---
 
